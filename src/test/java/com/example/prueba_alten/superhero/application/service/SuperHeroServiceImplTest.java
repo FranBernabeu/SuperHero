@@ -2,11 +2,12 @@ package com.example.prueba_alten.superhero.application.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -24,13 +25,21 @@ public class SuperHeroServiceImplTest {
     @Mock
     private SuperHeroRepository superHeroRepository;
 
+    @Mock
+    private KafkaProducerService kafkaProducerService;
+
     @InjectMocks
     private SuperHeroServiceImpl superHeroService;
 
     @Test
     public void testGetAllSuperHeroes() {
-        when(superHeroRepository.findAll()).thenReturn(Collections.emptyList());
-        assertEquals(0, superHeroService.getAllSuperHeroes().size());
+        Pageable pageable = PageRequest.of(0, 1);
+        when(superHeroRepository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.singletonList(new SuperHero())));
+
+        Page<SuperHero> resultPage = superHeroService.getAllSuperHeroes(0, 1);
+
+        assertEquals(1, resultPage.getTotalElements()); // Verificar que hay un elemento en la página
+        assertEquals(1, resultPage.getContent().size()); // Verificar que hay un elemento en el contenido de la página
     }
 
     @Test
@@ -54,8 +63,13 @@ public class SuperHeroServiceImplTest {
 
     @Test
     public void testGetSuperHeroesByNameContaining() {
-        when(superHeroRepository.findByNameContaining("man")).thenReturn(Collections.singletonList(new SuperHero()));
-        assertEquals(1, superHeroService.getSuperHeroesByNameContaining("man").size());
+        when(superHeroRepository.findByNameContaining(eq("man"), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(Collections.singletonList(new SuperHero())));
+
+        Page<SuperHero> resultPage = superHeroService.getSuperHeroesByNameContaining("man", 0, 1);
+
+        assertEquals(1, resultPage.getTotalElements()); // Verificar que hay un elemento en la página
+        assertEquals(1, resultPage.getContent().size()); // Verificar que hay un elemento en el contenido de la página
     }
 
     @Test

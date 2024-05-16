@@ -3,23 +3,26 @@ package com.example.prueba_alten.superhero.adapter.in.controller;
 import com.example.prueba_alten.superhero.adapter.in.dto.SuperHeroDTO;
 import com.example.prueba_alten.superhero.application.mapper.SuperHeroMapper;
 import com.example.prueba_alten.superhero.application.service.SuperHeroService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/superheroes")
 public class SuperHeroController {
+
     private final SuperHeroService superHeroService;
 
+    @Autowired
     public SuperHeroController(SuperHeroService superHeroService) {
         this.superHeroService = superHeroService;
     }
 
     @GetMapping
-    public List<SuperHeroDTO> getAllSuperHeroes() {
-        return SuperHeroMapper.INSTANCE.toDTOs(superHeroService.getAllSuperHeroes());
+    public Page<SuperHeroDTO> getAllSuperHeroes(@RequestParam int page, @RequestParam int size) {
+        return SuperHeroMapper.INSTANCE.toDTOs(superHeroService.getAllSuperHeroes(page, size));
     }
 
     @GetMapping("/{id}")
@@ -29,8 +32,9 @@ public class SuperHeroController {
     }
 
     @GetMapping("/search")
-    public List<SuperHeroDTO> getSuperHeroesByNameContaining(@RequestParam String name) {
-        return SuperHeroMapper.INSTANCE.toDTOs(superHeroService.getSuperHeroesByNameContaining(name));
+    public Page<SuperHeroDTO> getSuperHeroesByNameContaining(
+            @RequestParam String name, @RequestParam int page, @RequestParam int size) {
+        return SuperHeroMapper.INSTANCE.toDTOs(superHeroService.getSuperHeroesByNameContaining(name, page, size));
     }
 
     @PostMapping

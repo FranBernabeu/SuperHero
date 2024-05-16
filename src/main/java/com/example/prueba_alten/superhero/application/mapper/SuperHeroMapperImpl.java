@@ -2,9 +2,9 @@ package com.example.prueba_alten.superhero.application.mapper;
 
 import com.example.prueba_alten.superhero.adapter.in.dto.SuperHeroDTO;
 import com.example.prueba_alten.superhero.domain.model.SuperHero;
-import java.util.List;
+
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import java.util.stream.Collectors;
 
 @Component
 public class SuperHeroMapperImpl implements SuperHeroMapper {
@@ -34,13 +34,9 @@ public class SuperHeroMapperImpl implements SuperHeroMapper {
     }
 
     @Override
-    public List<SuperHeroDTO> toDTOs(List<SuperHero> entity) {
-        if (entity == null) {
-            return null;
-        }
-        return entity.stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+    public Page<SuperHeroDTO> toDTOs(Page<SuperHero> entity) {
+        return entity != null ?
+                entity.map(this::toDTO) : null;
     }
 }
 

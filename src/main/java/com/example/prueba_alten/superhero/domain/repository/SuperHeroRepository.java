@@ -1,10 +1,13 @@
 package com.example.prueba_alten.superhero.domain.repository;
 
 import com.example.prueba_alten.superhero.domain.model.SuperHero;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface SuperHeroRepository extends JpaRepository<SuperHero, Long> {
-    List<SuperHero> findByNameContaining(String name);
+    Page<SuperHero> findByNameContaining(String name, Pageable pageable);
 }
 

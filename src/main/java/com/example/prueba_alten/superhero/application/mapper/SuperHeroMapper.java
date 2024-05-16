@@ -5,8 +5,7 @@ import com.example.prueba_alten.superhero.adapter.in.dto.SuperHeroDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 @Mapper
 public interface SuperHeroMapper {
@@ -18,6 +17,6 @@ public interface SuperHeroMapper {
 
     SuperHeroDTO toDTO(SuperHero entity);
 
-    List<SuperHeroDTO> toDTOs(List<SuperHero> entity);
+    Page<SuperHeroDTO> toDTOs(Page<SuperHero> entity);
 }
 
